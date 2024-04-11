@@ -1,0 +1,692 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="UBL">UBL</option>
+                                
+                                    <option value="MCDOWELL-N">MCDOWELL-N</option>
+                                
+                                    <option value="ASIANPAINT">ASIANPAINT</option>
+                                
+                                    <option value="BERGEPAINT">BERGEPAINT</option>
+                                
+                                    <option value="HINDUNILVR">HINDUNILVR</option>
+                                
+                                    <option value="PIDILITIND">PIDILITIND</option>
+                                
+                                    <option value="ULTRACEMCO">ULTRACEMCO</option>
+                                
+                                    <option value="BALKRISIND">BALKRISIND</option>
+                                
+                                    <option value="MARUTI">MARUTI</option>
+                                
+                                    <option value="MRF">MRF</option>
+                                
+                                    <option value="TATACONSUM">TATACONSUM</option>
+                                
+                                    <option value="CANBK">CANBK</option>
+                                
+                                    <option value="ABCAPITAL">ABCAPITAL</option>
+                                
+                                    <option value="ADANIPORTS">ADANIPORTS</option>
+                                
+                                    <option value="AXISBANK">AXISBANK</option>
+                                
+                                    <option value="BAJFINANCE">BAJFINANCE</option>
+                                
+                                    <option value="BANDHANBNK">BANDHANBNK</option>
+                                
+                                    <option value="BANKBARODA">BANKBARODA</option>
+                                
+                                    <option value="BANKINDIA">BANKINDIA</option>
+                                
+                                    <option value="BHEL">BHEL</option>
+                                
+                                    <option value="BOSCHLTD">BOSCHLTD</option>
+                                
+                                    <option value="CHOLAFIN">CHOLAFIN</option>
+                                
+                                    <option value="DLF">DLF</option>
+                                
+                                    <option value="FEDERALBNK">FEDERALBNK</option>
+                                
+                                    <option value="GODREJPROP">GODREJPROP</option>
+                                
+                                    <option value="GRASIM">GRASIM</option>
+                                
+                                    <option value="HDFCAMC">HDFCAMC</option>
+                                
+                                    <option value="HDFCBANK">HDFCBANK</option>
+                                
+                                    <option value="ICICIBANK">ICICIBANK</option>
+                                
+                                    <option value="IDBI">IDBI</option>
+                                
+                                    <option value="IDFCFIRSTB">IDFCFIRSTB</option>
+                                
+                                    <option value="INDIANB">INDIANB</option>
+                                
+                                    <option value="INDUSINDBK">INDUSINDBK</option>
+                                
+                                    <option value="JSWSTEEL">JSWSTEEL</option>
+                                
+                                    <option value="L&TFH">L&TFH</option>
+                                
+                                    <option value="LT">LT</option>
+                                
+                                    <option value="M&MFIN">M&MFIN</option>
+                                
+                                    <option value="NMDC">NMDC</option>
+                                
+                                    <option value="PFC">PFC</option>
+                                
+                                    <option value="PNB">PNB</option>
+                                
+                                    <option value="RECLTD">RECLTD</option>
+                                
+                                    <option value="SAIL">SAIL</option>
+                                
+                                    <option value="SBIN">SBIN</option>
+                                
+                                    <option value="SHRIRAMFIN">SHRIRAMFIN</option>
+                                
+                                    <option value="TATAMOTORS">TATAMOTORS</option>
+                                
+                                    <option value="TATAPOWER">TATAPOWER</option>
+                                
+                                    <option value="UNIONBANK">UNIONBANK</option>
+                                
+                                    <option value="TITAN">TITAN</option>
+                                
+                                    <option value="ACC">ACC</option>
+                                
+                                    <option value="AMBUJACEM">AMBUJACEM</option>
+                                
+                                    <option value="BHARTIARTL">BHARTIARTL</option>
+                                
+                                    <option value="BPCL">BPCL</option>
+                                
+                                    <option value="DALBHARAT">DALBHARAT</option>
+                                
+                                    <option value="HINDALCO">HINDALCO</option>
+                                
+                                    <option value="ICICIGI">ICICIGI</option>
+                                
+                                    <option value="ICICIPRULI">ICICIPRULI</option>
+                                
+                                    <option value="JINDALSTEL">JINDALSTEL</option>
+                                
+                                    <option value="KOTAKBANK">KOTAKBANK</option>
+                                
+                                    <option value="M&M">M&M</option>
+                                
+                                    <option value="MUTHOOTFIN">MUTHOOTFIN</option>
+                                
+                                    <option value="SHREECEM">SHREECEM</option>
+                                
+                                    <option value="SIEMENS">SIEMENS</option>
+                                
+                                    <option value="GMRINFRA">GMRINFRA</option>
+                                
+                                    <option value="HDFCLIFE">HDFCLIFE</option>
+                                
+                                    <option value="CENTRALBK">CENTRALBK</option>
+                                
+                                    <option value="IRFC">IRFC</option>
+                                
+                                    <option value="RVNL">RVNL</option>
+                                
+                                    <option value="NIACL">NIACL</option>
+                                
+                                    <option value="GICRE">GICRE</option>
+                                
+                                    <option value="LICI">LICI</option>
+                                
+                                    <option value="IOB">IOB</option>
+                                
+                                    <option value="UCOBANK">UCOBANK</option>
+                                
+                                    <option value="DABUR">DABUR</option>
+                                
+                                    <option value="LTTS">LTTS</option>
+                                
+                                    <option value="COFORGE">COFORGE</option>
+                                
+                                    <option value="HCLTECH">HCLTECH</option>
+                                
+                                    <option value="INFY">INFY</option>
+                                
+                                    <option value="LTIM">LTIM</option>
+                                
+                                    <option value="MPHASIS">MPHASIS</option>
+                                
+                                    <option value="PERSISTENT">PERSISTENT</option>
+                                
+                                    <option value="TECHM">TECHM</option>
+                                
+                                    <option value="WIPRO">WIPRO</option>
+                                
+                                    <option value="ADANIENSOL">ADANIENSOL</option>
+                                
+                                    <option value="ADANIENT">ADANIENT</option>
+                                
+                                    <option value="ADANIGREEN">ADANIGREEN</option>
+                                
+                                    <option value="ATGL">ATGL</option>
+                                
+                                    <option value="AWL">AWL</option>
+                                
+                                    <option value="TCS">TCS</option>
+                                
+                                    <option value="SBILIFE">SBILIFE</option>
+                                
+                                    <option value="ASHOKLEY">ASHOKLEY</option>
+                                
+                                    <option value="BHARATFORG">BHARATFORG</option>
+                                
+                                    <option value="MOTHERSON">MOTHERSON</option>
+                                
+                                    <option value="SONACOMS">SONACOMS</option>
+                                
+                                    <option value="TVSMOTOR">TVSMOTOR</option>
+                                
+                                    <option value="HEROMOTOCO">HEROMOTOCO</option>
+                                
+                                    <option value="ASTRAL">ASTRAL</option>
+                                
+                                    <option value="DIXON">DIXON</option>
+                                
+                                    <option value="BAJAJ-AUTO">BAJAJ-AUTO</option>
+                                
+                                    <option value="SBICARD">SBICARD</option>
+                                
+                                    <option value="TRENT">TRENT</option>
+                                
+                                    <option value="SJVN">SJVN</option>
+                                
+                                    <option value="NHPC">NHPC</option>
+                                
+                                    <option value="OIL">OIL</option>
+                                
+                                    <option value="ONGC">ONGC</option>
+                                
+                                    <option value="INDHOTEL">INDHOTEL</option>
+                                
+                                    <option value="CIPLA">CIPLA</option>
+                                
+                                    <option value="AUROPHARMA">AUROPHARMA</option>
+                                
+                                    <option value="DRREDDY">DRREDDY</option>
+                                
+                                    <option value="LUPIN">LUPIN</option>
+                                
+                                    <option value="SUNPHARMA">SUNPHARMA</option>
+                                
+                                    <option value="ZYDUSLIFE">ZYDUSLIFE</option>
+                                
+                                    <option value="MARICO">MARICO</option>
+                                
+                                    <option value="JSL">JSL</option>
+                                
+                                    <option value="VEDL">VEDL</option>
+                                
+                                    <option value="IOC">IOC</option>
+                                
+                                    <option value="HINDPETRO">HINDPETRO</option>
+                                
+                                    <option value="COALINDIA">COALINDIA</option>
+                                
+                                    <option value="UPL">UPL</option>
+                                
+                                    <option value="PRESTIGE">PRESTIGE</option>
+                                
+                                    <option value="CONCOR">CONCOR</option>
+                                
+                                    <option value="NTPC">NTPC</option>
+                                
+                                    <option value="POWERGRID">POWERGRID</option>
+                                
+                                    <option value="BRITANNIA">BRITANNIA</option>
+                                
+                                    <option value="COLPAL">COLPAL</option>
+                                
+                                    <option value="ADANIPOWER">ADANIPOWER</option>
+                                
+                                    <option value="JIOFIN">JIOFIN</option>
+                                
+                                    <option value="DEEPAKNTR">DEEPAKNTR</option>
+                                
+                                    <option value="RELIANCE">RELIANCE</option>
+                                
+                                    <option value="GODREJCP">GODREJCP</option>
+                                
+                                    <option value="GAIL">GAIL</option>
+                                
+                                    <option value="NLCINDIA">NLCINDIA</option>
+                                
+                                    <option value="HAVELLS">HAVELLS</option>
+                                
+                                    <option value="OBEROIRLTY">OBEROIRLTY</option>
+                                
+                                    <option value="INDUSTOWER">INDUSTOWER</option>
+                                
+                                    <option value="IDEA">IDEA</option>
+                                
+                                    <option value="TORNTPOWER">TORNTPOWER</option>
+                                
+                                    <option value="PATANJALI">PATANJALI</option>
+                                
+                                    <option value="OFSS">OFSS</option>
+                                
+                                    <option value="3MINDIA">3MINDIA</option>
+                                
+                                    <option value="HINDZINC">HINDZINC</option>
+                                
+                                    <option value="COROMANDEL">COROMANDEL</option>
+                                
+                                    <option value="PAGEIND">PAGEIND</option>
+                                
+                                    <option value="KPITTECH">KPITTECH</option>
+                                
+                                    <option value="SUNDARMFIN">SUNDARMFIN</option>
+                                
+                                    <option value="DMART">DMART</option>
+                                
+                                    <option value="TATAELXSI">TATAELXSI</option>
+                                
+                                    <option value="JSWINFRA">JSWINFRA</option>
+                                
+                                    <option value="SUPREMEIND">SUPREMEIND</option>
+                                
+                                    <option value="METROBRAND">METROBRAND</option>
+                                
+                                    <option value="MAZDOCK">MAZDOCK</option>
+                                
+                                    <option value="TATASTEEL">TATASTEEL</option>
+                                
+                                    <option value="ALKEM">ALKEM</option>
+                                
+                                    <option value="BEL">BEL</option>
+                                
+                                    <option value="POLYCAB">POLYCAB</option>
+                                
+                                    <option value="JSWENERGY">JSWENERGY</option>
+                                
+                                    <option value="SUZLON">SUZLON</option>
+                                
+                                    <option value="IRCTC">IRCTC</option>
+                                
+                                    <option value="NESTLEIND">NESTLEIND</option>
+                                
+                                    <option value="PGHH">PGHH</option>
+                                
+                                    <option value="EICHERMOT">EICHERMOT</option>
+                                
+                                    <option value="PAYTM">PAYTM</option>
+                                
+                                    <option value="BAJAJHLDNG">BAJAJHLDNG</option>
+                                
+                                    <option value="PHOENIXLTD">PHOENIXLTD</option>
+                                
+                                    <option value="POONAWALLA">POONAWALLA</option>
+                                
+                                    <option value="AIAENG">AIAENG</option>
+                                
+                                    <option value="APLAPOLLO">APLAPOLLO</option>
+                                
+                                    <option value="LINDEINDIA">LINDEINDIA</option>
+                                
+                                    <option value="YESBANK">YESBANK</option>
+                                
+                                    <option value="SOLARINDS">SOLARINDS</option>
+                                
+                                    <option value="TATATECH">TATATECH</option>
+                                
+                                    <option value="LODHA">LODHA</option>
+                                
+                                    <option value="FLUOROCHEM">FLUOROCHEM</option>
+                                
+                                    <option value="POLICYBZR">POLICYBZR</option>
+                                
+                                    <option value="SCHAEFFLER">SCHAEFFLER</option>
+                                
+                                    <option value="ABB">ABB</option>
+                                
+                                    <option value="VBL">VBL</option>
+                                
+                                    <option value="NAUKRI">NAUKRI</option>
+                                
+                                    <option value="NYKAA">NYKAA</option>
+                                
+                                    <option value="JUBLFOOD">JUBLFOOD</option>
+                                
+                                    <option value="KALYANKJIL">KALYANKJIL</option>
+                                
+                                    <option value="MAXHEALTH">MAXHEALTH</option>
+                                
+                                    <option value="UNOMINDA">UNOMINDA</option>
+                                
+                                    <option value="DIVISLAB">DIVISLAB</option>
+                                
+                                    <option value="MANKIND">MANKIND</option>
+                                
+                                    <option value="ZOMATO">ZOMATO</option>
+                                
+                                    <option value="SRF">SRF</option>
+                                
+                                    <option value="CGPOWER">CGPOWER</option>
+                                
+                                    <option value="FACT">FACT</option>
+                                
+                                    <option value="HAL">HAL</option>
+                                
+                                    <option value="ITC">ITC</option>
+                                
+                                    <option value="INDIGO">INDIGO</option>
+                                
+                                    <option value="TORNTPHARM">TORNTPHARM</option>
+                                
+                                    <option value="CUMMINSIND">CUMMINSIND</option>
+                                
+                                    <option value="APOLLOHOSP">APOLLOHOSP</option>
+                                
+                                    <option value="THERMAX">THERMAX</option>
+                                
+                                    <option value="AUBANK">AUBANK</option>
+                                
+                                    <option value="TATACOMM">TATACOMM</option>
+                                
+                                    <option value="BAJAJFINSV">BAJAJFINSV</option>
+                                
+                                    <option value="PIIND">PIIND</option>
+                                
+                                    <option value="TIINDIA">TIINDIA</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "UBL", "label": "UBL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MCDOWELL-N", "label": "MCDOWELL-N", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ASIANPAINT", "label": "ASIANPAINT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BERGEPAINT", "label": "BERGEPAINT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HINDUNILVR", "label": "HINDUNILVR", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PIDILITIND", "label": "PIDILITIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ULTRACEMCO", "label": "ULTRACEMCO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BALKRISIND", "label": "BALKRISIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MARUTI", "label": "MARUTI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MRF", "label": "MRF", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATACONSUM", "label": "TATACONSUM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CANBK", "label": "CANBK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ABCAPITAL", "label": "ABCAPITAL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ADANIPORTS", "label": "ADANIPORTS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AXISBANK", "label": "AXISBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BAJFINANCE", "label": "BAJFINANCE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BANDHANBNK", "label": "BANDHANBNK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BANKBARODA", "label": "BANKBARODA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BANKINDIA", "label": "BANKINDIA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BHEL", "label": "BHEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BOSCHLTD", "label": "BOSCHLTD", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CHOLAFIN", "label": "CHOLAFIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DLF", "label": "DLF", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "FEDERALBNK", "label": "FEDERALBNK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GODREJPROP", "label": "GODREJPROP", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GRASIM", "label": "GRASIM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HDFCAMC", "label": "HDFCAMC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HDFCBANK", "label": "HDFCBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ICICIBANK", "label": "ICICIBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IDBI", "label": "IDBI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IDFCFIRSTB", "label": "IDFCFIRSTB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "INDIANB", "label": "INDIANB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "INDUSINDBK", "label": "INDUSINDBK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JSWSTEEL", "label": "JSWSTEEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "L\u0026TFH", "label": "L\u0026TFH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LT", "label": "LT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "M\u0026MFIN", "label": "M\u0026MFIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NMDC", "label": "NMDC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PFC", "label": "PFC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PNB", "label": "PNB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "RECLTD", "label": "RECLTD", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SAIL", "label": "SAIL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SBIN", "label": "SBIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SHRIRAMFIN", "label": "SHRIRAMFIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATAMOTORS", "label": "TATAMOTORS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATAPOWER", "label": "TATAPOWER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UNIONBANK", "label": "UNIONBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TITAN", "label": "TITAN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ACC", "label": "ACC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AMBUJACEM", "label": "AMBUJACEM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BHARTIARTL", "label": "BHARTIARTL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BPCL", "label": "BPCL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DALBHARAT", "label": "DALBHARAT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HINDALCO", "label": "HINDALCO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ICICIGI", "label": "ICICIGI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ICICIPRULI", "label": "ICICIPRULI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JINDALSTEL", "label": "JINDALSTEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "KOTAKBANK", "label": "KOTAKBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "M\u0026M", "label": "M\u0026M", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MUTHOOTFIN", "label": "MUTHOOTFIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SHREECEM", "label": "SHREECEM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SIEMENS", "label": "SIEMENS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GMRINFRA", "label": "GMRINFRA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HDFCLIFE", "label": "HDFCLIFE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CENTRALBK", "label": "CENTRALBK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IRFC", "label": "IRFC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "RVNL", "label": "RVNL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NIACL", "label": "NIACL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GICRE", "label": "GICRE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LICI", "label": "LICI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IOB", "label": "IOB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UCOBANK", "label": "UCOBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DABUR", "label": "DABUR", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LTTS", "label": "LTTS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "COFORGE", "label": "COFORGE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HCLTECH", "label": "HCLTECH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "INFY", "label": "INFY", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LTIM", "label": "LTIM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MPHASIS", "label": "MPHASIS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PERSISTENT", "label": "PERSISTENT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TECHM", "label": "TECHM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "WIPRO", "label": "WIPRO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ADANIENSOL", "label": "ADANIENSOL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ADANIENT", "label": "ADANIENT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ADANIGREEN", "label": "ADANIGREEN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ATGL", "label": "ATGL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AWL", "label": "AWL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TCS", "label": "TCS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SBILIFE", "label": "SBILIFE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ASHOKLEY", "label": "ASHOKLEY", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BHARATFORG", "label": "BHARATFORG", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MOTHERSON", "label": "MOTHERSON", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SONACOMS", "label": "SONACOMS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TVSMOTOR", "label": "TVSMOTOR", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HEROMOTOCO", "label": "HEROMOTOCO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ASTRAL", "label": "ASTRAL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DIXON", "label": "DIXON", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BAJAJ-AUTO", "label": "BAJAJ-AUTO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SBICARD", "label": "SBICARD", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TRENT", "label": "TRENT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SJVN", "label": "SJVN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NHPC", "label": "NHPC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "OIL", "label": "OIL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ONGC", "label": "ONGC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "INDHOTEL", "label": "INDHOTEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CIPLA", "label": "CIPLA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AUROPHARMA", "label": "AUROPHARMA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DRREDDY", "label": "DRREDDY", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LUPIN", "label": "LUPIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SUNPHARMA", "label": "SUNPHARMA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ZYDUSLIFE", "label": "ZYDUSLIFE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MARICO", "label": "MARICO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JSL", "label": "JSL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "VEDL", "label": "VEDL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IOC", "label": "IOC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HINDPETRO", "label": "HINDPETRO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "COALINDIA", "label": "COALINDIA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UPL", "label": "UPL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PRESTIGE", "label": "PRESTIGE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CONCOR", "label": "CONCOR", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NTPC", "label": "NTPC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "POWERGRID", "label": "POWERGRID", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BRITANNIA", "label": "BRITANNIA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "COLPAL", "label": "COLPAL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ADANIPOWER", "label": "ADANIPOWER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JIOFIN", "label": "JIOFIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DEEPAKNTR", "label": "DEEPAKNTR", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "RELIANCE", "label": "RELIANCE", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GODREJCP", "label": "GODREJCP", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "GAIL", "label": "GAIL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NLCINDIA", "label": "NLCINDIA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HAVELLS", "label": "HAVELLS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "OBEROIRLTY", "label": "OBEROIRLTY", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "INDUSTOWER", "label": "INDUSTOWER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IDEA", "label": "IDEA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TORNTPOWER", "label": "TORNTPOWER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PATANJALI", "label": "PATANJALI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "OFSS", "label": "OFSS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "3MINDIA", "label": "3MINDIA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HINDZINC", "label": "HINDZINC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "COROMANDEL", "label": "COROMANDEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PAGEIND", "label": "PAGEIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "KPITTECH", "label": "KPITTECH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SUNDARMFIN", "label": "SUNDARMFIN", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DMART", "label": "DMART", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATAELXSI", "label": "TATAELXSI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JSWINFRA", "label": "JSWINFRA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SUPREMEIND", "label": "SUPREMEIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "METROBRAND", "label": "METROBRAND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MAZDOCK", "label": "MAZDOCK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATASTEEL", "label": "TATASTEEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ALKEM", "label": "ALKEM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BEL", "label": "BEL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "POLYCAB", "label": "POLYCAB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JSWENERGY", "label": "JSWENERGY", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SUZLON", "label": "SUZLON", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "IRCTC", "label": "IRCTC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NESTLEIND", "label": "NESTLEIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PGHH", "label": "PGHH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "EICHERMOT", "label": "EICHERMOT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PAYTM", "label": "PAYTM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BAJAJHLDNG", "label": "BAJAJHLDNG", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PHOENIXLTD", "label": "PHOENIXLTD", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "POONAWALLA", "label": "POONAWALLA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AIAENG", "label": "AIAENG", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "APLAPOLLO", "label": "APLAPOLLO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LINDEINDIA", "label": "LINDEINDIA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "YESBANK", "label": "YESBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SOLARINDS", "label": "SOLARINDS", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATATECH", "label": "TATATECH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "LODHA", "label": "LODHA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "FLUOROCHEM", "label": "FLUOROCHEM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "POLICYBZR", "label": "POLICYBZR", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SCHAEFFLER", "label": "SCHAEFFLER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ABB", "label": "ABB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "VBL", "label": "VBL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NAUKRI", "label": "NAUKRI", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "NYKAA", "label": "NYKAA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "JUBLFOOD", "label": "JUBLFOOD", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "KALYANKJIL", "label": "KALYANKJIL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MAXHEALTH", "label": "MAXHEALTH", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "UNOMINDA", "label": "UNOMINDA", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "DIVISLAB", "label": "DIVISLAB", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "MANKIND", "label": "MANKIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ZOMATO", "label": "ZOMATO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "SRF", "label": "SRF", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CGPOWER", "label": "CGPOWER", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "FACT", "label": "FACT", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "HAL", "label": "HAL", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "ITC", "label": "ITC", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "INDIGO", "label": "INDIGO", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TORNTPHARM", "label": "TORNTPHARM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "CUMMINSIND", "label": "CUMMINSIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "APOLLOHOSP", "label": "APOLLOHOSP", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "THERMAX", "label": "THERMAX", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "AUBANK", "label": "AUBANK", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TATACOMM", "label": "TATACOMM", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "BAJAJFINSV", "label": "BAJAJFINSV", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PIIND", "label": "PIIND", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "TIINDIA", "label": "TIINDIA", "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"from": "UBL", "to": "MCDOWELL-N", "width": 0.5585241145220428}, {"from": "ASIANPAINT", "to": "BERGEPAINT", "width": 0.6475157195194945}, {"from": "ASIANPAINT", "to": "HINDUNILVR", "width": 0.468292605339205}, {"from": "ASIANPAINT", "to": "PIDILITIND", "width": 0.6274060316395546}, {"from": "ASIANPAINT", "to": "ULTRACEMCO", "width": 0.4623345984422534}, {"from": "BALKRISIND", "to": "MARUTI", "width": 0.4617400849819999}, {"from": "BALKRISIND", "to": "MRF", "width": 0.4855210417180154}, {"from": "BALKRISIND", "to": "TATACONSUM", "width": 0.467234493008144}, {"from": "CANBK", "to": "ABCAPITAL", "width": 0.4873329978497842}, {"from": "CANBK", "to": "ADANIPORTS", "width": 0.493928673085692}, {"from": "CANBK", "to": "AXISBANK", "width": 0.5564269205897769}, {"from": "CANBK", "to": "BAJFINANCE", "width": 0.4813228669515272}, {"from": "CANBK", "to": "BANDHANBNK", "width": 0.4723949171843534}, {"from": "CANBK", "to": "BANKBARODA", "width": 0.7727670330607742}, {"from": "CANBK", "to": "BANKINDIA", "width": 0.6117499803822823}, {"from": "CANBK", "to": "BHEL", "width": 0.5404790338164431}, {"from": "CANBK", "to": "BOSCHLTD", "width": 0.4561367931569097}, {"from": "CANBK", "to": "CHOLAFIN", "width": 0.4727887999987855}, {"from": "CANBK", "to": "DLF", "width": 0.543232722675219}, {"from": "CANBK", "to": "FEDERALBNK", "width": 0.6598378985572052}, {"from": "CANBK", "to": "GODREJPROP", "width": 0.450197987464986}, {"from": "CANBK", "to": "GRASIM", "width": 0.4698082451121841}, {"from": "CANBK", "to": "HDFCAMC", "width": 0.4525872012532551}, {"from": "CANBK", "to": "HDFCBANK", "width": 0.4642755008356951}, {"from": "CANBK", "to": "ICICIBANK", "width": 0.5599535098749675}, {"from": "CANBK", "to": "IDBI", "width": 0.4739405240583431}, {"from": "CANBK", "to": "IDFCFIRSTB", "width": 0.5642709969052718}, {"from": "CANBK", "to": "INDIANB", "width": 0.6341517953906736}, {"from": "CANBK", "to": "INDUSINDBK", "width": 0.4772237317565029}, {"from": "CANBK", "to": "JSWSTEEL", "width": 0.4520558580155134}, {"from": "CANBK", "to": "L\u0026TFH", "width": 0.6127812384023278}, {"from": "CANBK", "to": "LT", "width": 0.4569268863263919}, {"from": "CANBK", "to": "M\u0026MFIN", "width": 0.4982514537163612}, {"from": "CANBK", "to": "NMDC", "width": 0.4632382247005343}, {"from": "CANBK", "to": "PFC", "width": 0.5200904852444481}, {"from": "CANBK", "to": "PNB", "width": 0.7393959789084072}, {"from": "CANBK", "to": "RECLTD", "width": 0.4866666643439138}, {"from": "CANBK", "to": "SAIL", "width": 0.4888934154719929}, {"from": "CANBK", "to": "SBIN", "width": 0.7342960255817794}, {"from": "CANBK", "to": "SHRIRAMFIN", "width": 0.4760618255849737}, {"from": "CANBK", "to": "TATAMOTORS", "width": 0.4797232594403891}, {"from": "CANBK", "to": "TATAPOWER", "width": 0.4880588756933542}, {"from": "CANBK", "to": "UNIONBANK", "width": 0.6618441942254131}, {"from": "TITAN", "to": "AXISBANK", "width": 0.4606000840544751}, {"from": "TITAN", "to": "BAJFINANCE", "width": 0.4823847885096781}, {"from": "TITAN", "to": "DLF", "width": 0.4579689194377418}, {"from": "TITAN", "to": "GRASIM", "width": 0.4795574793346156}, {"from": "TITAN", "to": "ICICIBANK", "width": 0.4755249113433468}, {"from": "TITAN", "to": "L\u0026TFH", "width": 0.4532983926079812}, {"from": "TITAN", "to": "LT", "width": 0.4771084554245807}, {"from": "TITAN", "to": "MARUTI", "width": 0.4957993832812666}, {"from": "TITAN", "to": "TATAMOTORS", "width": 0.4808899907515049}, {"from": "GRASIM", "to": "ACC", "width": 0.5148809588707672}, {"from": "GRASIM", "to": "AMBUJACEM", "width": 0.47821503028573}, {"from": "GRASIM", "to": "AXISBANK", "width": 0.551731463849467}, {"from": "GRASIM", "to": "BAJFINANCE", "width": 0.4974628542869655}, {"from": "GRASIM", "to": "BHARTIARTL", "width": 0.4727696697718205}, {"from": "GRASIM", "to": "BOSCHLTD", "width": 0.4537869519578636}, {"from": "GRASIM", "to": "BPCL", "width": 0.4712684027828555}, {"from": "GRASIM", "to": "CHOLAFIN", "width": 0.470668407316667}, {"from": "GRASIM", "to": "DALBHARAT", "width": 0.5042008115819705}, {"from": "GRASIM", "to": "DLF", "width": 0.5667630669256195}, {"from": "GRASIM", "to": "FEDERALBNK", "width": 0.5226755867840758}, {"from": "GRASIM", "to": "GODREJPROP", "width": 0.5063834640289899}, {"from": "GRASIM", "to": "HDFCBANK", "width": 0.4926268423449403}, {"from": "GRASIM", "to": "HINDALCO", "width": 0.5454369280527256}, {"from": "GRASIM", "to": "ICICIBANK", "width": 0.5365890035318868}, {"from": "GRASIM", "to": "ICICIGI", "width": 0.4551375474719931}, {"from": "GRASIM", "to": "ICICIPRULI", "width": 0.4546904748453}, {"from": "GRASIM", "to": "IDFCFIRSTB", "width": 0.4763622579886865}, {"from": "GRASIM", "to": "JINDALSTEL", "width": 0.5112538989651115}, {"from": "GRASIM", "to": "JSWSTEEL", "width": 0.5733868757458624}, {"from": "GRASIM", "to": "KOTAKBANK", "width": 0.453030913781201}, {"from": "GRASIM", "to": "L\u0026TFH", "width": 0.5270443381076301}, {"from": "GRASIM", "to": "LT", "width": 0.548440827926923}, {"from": "GRASIM", "to": "M\u0026M", "width": 0.4709338269360857}, {"from": "GRASIM", "to": "MARUTI", "width": 0.4920695873825599}, {"from": "GRASIM", "to": "MCDOWELL-N", "width": 0.4528222715597434}, {"from": "GRASIM", "to": "MUTHOOTFIN", "width": 0.4821318154524414}, {"from": "GRASIM", "to": "PFC", "width": 0.4552741517130881}, {"from": "GRASIM", "to": "SAIL", "width": 0.5162404379400818}, {"from": "GRASIM", "to": "SBIN", "width": 0.551128827224591}, {"from": "GRASIM", "to": "SHREECEM", "width": 0.5653659928611177}, {"from": "GRASIM", "to": "SIEMENS", "width": 0.4756643744658234}, {"from": "GRASIM", "to": "TATACONSUM", "width": 0.4967132044426164}, {"from": "GRASIM", "to": "TATAMOTORS", "width": 0.4788000296451493}, {"from": "GRASIM", "to": "ULTRACEMCO", "width": 0.6756564410040172}, {"from": "GMRINFRA", "to": "BHEL", "width": 0.5056745115259376}, {"from": "GMRINFRA", "to": "DLF", "width": 0.4805840885248668}, {"from": "GMRINFRA", "to": "IDFCFIRSTB", "width": 0.4525965717575528}, {"from": "GMRINFRA", "to": "L\u0026TFH", "width": 0.4784438646432126}, {"from": "HDFCBANK", "to": "AXISBANK", "width": 0.5463736778578893}, {"from": "HDFCBANK", "to": "BAJFINANCE", "width": 0.5577939706728144}, {"from": "HDFCBANK", "to": "DLF", "width": 0.4568645955285935}, {"from": "HDFCBANK", "to": "FEDERALBNK", "width": 0.5220490744720969}, {"from": "HDFCBANK", "to": "HDFCLIFE", "width": 0.4648753322880265}, {"from": "HDFCBANK", "to": "ICICIBANK", "width": 0.6621106569323331}, {"from": "HDFCBANK", "to": "INDUSINDBK", "width": 0.4931397090869408}, {"from": "HDFCBANK", "to": "KOTAKBANK", "width": 0.6545458449014709}, {"from": "HDFCBANK", "to": "L\u0026TFH", "width": 0.4956822256568453}, {"from": "HDFCBANK", "to": "LT", "width": 0.5187448168753251}, {"from": "HDFCBANK", "to": "SBIN", "width": 0.547472927853267}, {"from": "HDFCBANK", "to": "SHRIRAMFIN", "width": 0.4622219505743339}, {"from": "HDFCBANK", "to": "ULTRACEMCO", "width": 0.4594591404740341}, {"from": "BANKBARODA", "to": "AXISBANK", "width": 0.4981892773419482}, {"from": "BANKBARODA", "to": "BANKINDIA", "width": 0.6150219045444544}, {"from": "BANKBARODA", "to": "BHEL", "width": 0.5010501451347056}, {"from": "BANKBARODA", "to": "CENTRALBK", "width": 0.4623841601127947}, {"from": "BANKBARODA", "to": "DLF", "width": 0.496115047270745}, {"from": "BANKBARODA", "to": "FEDERALBNK", "width": 0.6093968485610329}, {"from": "BANKBARODA", "to": "ICICIBANK", "width": 0.4992591206163209}, {"from": "BANKBARODA", "to": "IDFCFIRSTB", "width": 0.5557492235465873}, {"from": "BANKBARODA", "to": "INDIANB", "width": 0.597496409676917}, {"from": "BANKBARODA", "to": "L\u0026TFH", "width": 0.5608725738191944}, {"from": "BANKBARODA", "to": "M\u0026MFIN", "width": 0.4643693206226085}, {"from": "BANKBARODA", "to": "NMDC", "width": 0.4533255977352125}, {"from": "BANKBARODA", "to": "PFC", "width": 0.5058983044440164}, {"from": "BANKBARODA", "to": "PNB", "width": 0.7287607139339963}, {"from": "BANKBARODA", "to": "RECLTD", "width": 0.4668642031798446}, {"from": "BANKBARODA", "to": "SAIL", "width": 0.4644894177566371}, {"from": "BANKBARODA", "to": "SBIN", "width": 0.7383717050143837}, {"from": "BANKBARODA", "to": "TATAPOWER", "width": 0.4626341794591525}, {"from": "BANKBARODA", "to": "UNIONBANK", "width": 0.6313540245617146}, {"from": "IRFC", "to": "RVNL", "width": 0.6243488816134688}, {"from": "NIACL", "to": "GICRE", "width": 0.6815365009949093}, {"from": "NIACL", "to": "LICI", "width": 0.4787868025365997}, {"from": "PNB", "to": "ABCAPITAL", "width": 0.4567461378590283}, {"from": "PNB", "to": "BANKINDIA", "width": 0.6497721140365077}, {"from": "PNB", "to": "BHEL", "width": 0.4898974750421454}, {"from": "PNB", "to": "CENTRALBK", "width": 0.4973387853084936}, {"from": "PNB", "to": "FEDERALBNK", "width": 0.551307888592433}, {"from": "PNB", "to": "IDBI", "width": 0.5260134239527822}, {"from": "PNB", "to": "IDFCFIRSTB", "width": 0.5425474847351175}, {"from": "PNB", "to": "INDIANB", "width": 0.6013728066455533}, {"from": "PNB", "to": "IOB", "width": 0.5071443882544898}, {"from": "PNB", "to": "L\u0026TFH", "width": 0.5470350799366841}, {"from": "PNB", "to": "PFC", "width": 0.4896247761259858}, {"from": "PNB", "to": "RECLTD", "width": 0.4635902024852612}, {"from": "PNB", "to": "SBIN", "width": 0.6437959851705974}, {"from": "PNB", "to": "TATAPOWER", "width": 0.4525323378477502}, {"from": "PNB", "to": "UCOBANK", "width": 0.5014710887272358}, {"from": "PNB", "to": "UNIONBANK", "width": 0.6915824033796624}, {"from": "PIDILITIND", "to": "BERGEPAINT", "width": 0.5913165433245593}, {"from": "PIDILITIND", "to": "DABUR", "width": 0.4974940764167825}, {"from": "PIDILITIND", "to": "HINDUNILVR", "width": 0.482081419590604}, {"from": "LTTS", "to": "COFORGE", "width": 0.5471524736681909}, {"from": "LTTS", "to": "HCLTECH", "width": 0.5067837023911559}, {"from": "LTTS", "to": "INFY", "width": 0.5124820761136769}, {"from": "LTTS", "to": "LTIM", "width": 0.5971593646400971}, {"from": "LTTS", "to": "MPHASIS", "width": 0.5014852211793688}, {"from": "LTTS", "to": "PERSISTENT", "width": 0.470436253518518}, {"from": "LTTS", "to": "TECHM", "width": 0.4849259308223185}, {"from": "LTTS", "to": "WIPRO", "width": 0.4546956065476525}, {"from": "ADANIENSOL", "to": "ADANIENT", "width": 0.4905355234392141}, {"from": "ADANIENSOL", "to": "ADANIGREEN", "width": 0.5406328659830216}, {"from": "ADANIENSOL", "to": "ATGL", "width": 0.6687332705662424}, {"from": "ADANIENSOL", "to": "AWL", "width": 0.4945219338742836}, {"from": "MPHASIS", "to": "COFORGE", "width": 0.5455122286105336}, {"from": "MPHASIS", "to": "HCLTECH", "width": 0.4695856826776067}, {"from": "MPHASIS", "to": "INFY", "width": 0.4906148142872416}, {"from": "MPHASIS", "to": "LTIM", "width": 0.5359019836903836}, {"from": "MPHASIS", "to": "PERSISTENT", "width": 0.5223598373167326}, {"from": "MPHASIS", "to": "TCS", "width": 0.4801577684089795}, {"from": "MPHASIS", "to": "TECHM", "width": 0.4776837464178229}, {"from": "MPHASIS", "to": "WIPRO", "width": 0.4777972223939067}, {"from": "ICICIGI", "to": "HDFCLIFE", "width": 0.5382039175745882}, {"from": "ICICIGI", "to": "ICICIPRULI", "width": 0.5254299208171557}, {"from": "ICICIGI", "to": "SBILIFE", "width": 0.4875697439006061}, {"from": "TATAMOTORS", "to": "ASHOKLEY", "width": 0.5768177592141878}, {"from": "TATAMOTORS", "to": "AXISBANK", "width": 0.4504893042996202}, {"from": "TATAMOTORS", "to": "BAJFINANCE", "width": 0.4765661183775735}, {"from": "TATAMOTORS", "to": "BHARATFORG", "width": 0.5301870883744038}, {"from": "TATAMOTORS", "to": "BOSCHLTD", "width": 0.495348257682093}, {"from": "TATAMOTORS", "to": "CHOLAFIN", "width": 0.4579574133077404}, {"from": "TATAMOTORS", "to": "DLF", "width": 0.5717519691566756}, {"from": "TATAMOTORS", "to": "FEDERALBNK", "width": 0.520626548464957}, {"from": "TATAMOTORS", "to": "GODREJPROP", "width": 0.4660904874739778}, {"from": "TATAMOTORS", "to": "HINDALCO", "width": 0.5026471240867503}, {"from": "TATAMOTORS", "to": "ICICIBANK", "width": 0.4577052391636184}, {"from": "TATAMOTORS", "to": "IDFCFIRSTB", "width": 0.4899813110799311}, {"from": "TATAMOTORS", "to": "JINDALSTEL", "width": 0.4762537627377565}, {"from": "TATAMOTORS", "to": "JSWSTEEL", "width": 0.4830099115062938}, {"from": "TATAMOTORS", "to": "L\u0026TFH", "width": 0.5358584248956137}, {"from": "TATAMOTORS", "to": "LT", "width": 0.4915725103980313}, {"from": "TATAMOTORS", "to": "M\u0026M", "width": 0.5473367957313835}, {"from": "TATAMOTORS", "to": "MARUTI", "width": 0.497940907905883}, {"from": "TATAMOTORS", "to": "MOTHERSON", "width": 0.4956987661475805}, {"from": "TATAMOTORS", "to": "SAIL", "width": 0.4640457526155004}, {"from": "TATAMOTORS", "to": "SBIN", "width": 0.5264188144757496}, {"from": "TATAMOTORS", "to": "SONACOMS", "width": 0.452707284633858}, {"from": "TATAMOTORS", "to": "TATAPOWER", "width": 0.5333210547817769}, {"from": "TATAMOTORS", "to": "TVSMOTOR", "width": 0.4577737934582535}, {"from": "AMBUJACEM", "to": "ACC", "width": 0.8188244248553976}, {"from": "AMBUJACEM", "to": "ADANIENT", "width": 0.4927608105236155}, {"from": "AMBUJACEM", "to": "ADANIPORTS", "width": 0.5406282646325743}, {"from": "AMBUJACEM", "to": "SHREECEM", "width": 0.5226146134162797}, {"from": "AMBUJACEM", "to": "ULTRACEMCO", "width": 0.5304004674007876}, {"from": "M\u0026M", "to": "ASHOKLEY", "width": 0.4682475387115889}, {"from": "M\u0026M", "to": "BAJFINANCE", "width": 0.4546788252746}, {"from": "M\u0026M", "to": "BOSCHLTD", "width": 0.4900564095551255}, {"from": "M\u0026M", "to": "DLF", "width": 0.4967752221481951}, {"from": "M\u0026M", "to": "FEDERALBNK", "width": 0.458830075313617}, {"from": "M\u0026M", "to": "HEROMOTOCO", "width": 0.4654810866301678}, {"from": "M\u0026M", "to": "ICICIBANK", "width": 0.4549690088942498}, {"from": "M\u0026M", "to": "L\u0026TFH", "width": 0.4736369416385395}, {"from": "M\u0026M", "to": "LT", "width": 0.460323156277343}, {"from": "M\u0026M", "to": "MARUTI", "width": 0.5262289436931649}, {"from": "ACC", "to": "ADANIENT", "width": 0.4623231502188721}, {"from": "ACC", "to": "ADANIPORTS", "width": 0.5237533453435113}, {"from": "ACC", "to": "DALBHARAT", "width": 0.4621771432769919}, {"from": "ACC", "to": "DLF", "width": 0.4697724565624568}, {"from": "ACC", "to": "SHREECEM", "width": 0.5564953004827718}, {"from": "ACC", "to": "ULTRACEMCO", "width": 0.5783092971393862}, {"from": "ASTRAL", "to": "DIXON", "width": 0.4710577957709153}, {"from": "UCOBANK", "to": "BANKINDIA", "width": 0.5236704033581997}, {"from": "UCOBANK", "to": "CENTRALBK", "width": 0.6892847612091114}, {"from": "UCOBANK", "to": "INDIANB", "width": 0.458338176061877}, {"from": "UCOBANK", "to": "IOB", "width": 0.6830309549587311}, {"from": "UCOBANK", "to": "UNIONBANK", "width": 0.521361283581373}, {"from": "BAJAJ-AUTO", "to": "HEROMOTOCO", "width": 0.6120253527136875}, {"from": "BAJAJ-AUTO", "to": "MARUTI", "width": 0.519872702042873}, {"from": "BAJAJ-AUTO", "to": "TVSMOTOR", "width": 0.4715198214894145}, {"from": "BAJFINANCE", "to": "ABCAPITAL", "width": 0.4539407108026574}, {"from": "BAJFINANCE", "to": "ASHOKLEY", "width": 0.4710725290934586}, {"from": "BAJFINANCE", "to": "AXISBANK", "width": 0.5683046506094862}, {"from": "BAJFINANCE", "to": "BANDHANBNK", "width": 0.5277948846773636}, {"from": "BAJFINANCE", "to": "BHARATFORG", "width": 0.4514339003708793}, {"from": "BAJFINANCE", "to": "BOSCHLTD", "width": 0.4619898276138893}, {"from": "BAJFINANCE", "to": "CHOLAFIN", "width": 0.6430652367320914}, {"from": "BAJFINANCE", "to": "DLF", "width": 0.5307651080896226}, {"from": "BAJFINANCE", "to": "FEDERALBNK", "width": 0.5852247999516921}, {"from": "BAJFINANCE", "to": "GODREJPROP", "width": 0.4669558502334195}, {"from": "BAJFINANCE", "to": "HDFCLIFE", "width": 0.4557308224286802}, {"from": "BAJFINANCE", "to": "ICICIBANK", "width": 0.627586177690933}, {"from": "BAJFINANCE", "to": "IDFCFIRSTB", "width": 0.5244205940994142}, {"from": "BAJFINANCE", "to": "INDUSINDBK", "width": 0.5439387824146181}, {"from": "BAJFINANCE", "to": "JSWSTEEL", "width": 0.4690040972844367}, {"from": "BAJFINANCE", "to": "KOTAKBANK", "width": 0.5725967888571766}, {"from": "BAJFINANCE", "to": "L\u0026TFH", "width": 0.5896407860929885}, {"from": "BAJFINANCE", "to": "LT", "width": 0.5003809893810636}, {"from": "BAJFINANCE", "to": "M\u0026MFIN", "width": 0.5712704808584896}, {"from": "BAJFINANCE", "to": "MARUTI", "width": 0.4915200509777249}, {"from": "BAJFINANCE", "to": "MUTHOOTFIN", "width": 0.4569431977949185}, {"from": "BAJFINANCE", "to": "SBICARD", "width": 0.4709043026690278}, {"from": "BAJFINANCE", "to": "SBIN", "width": 0.571343416926192}, {"from": "BAJFINANCE", "to": "SHRIRAMFIN", "width": 0.5031181823596599}, {"from": "BAJFINANCE", "to": "TATACONSUM", "width": 0.4684140830744169}, {"from": "BAJFINANCE", "to": "TRENT", "width": 0.4975096083597357}, {"from": "BAJFINANCE", "to": "ULTRACEMCO", "width": 0.468476333254713}, {"from": "ICICIPRULI", "to": "AXISBANK", "width": 0.470166329969457}, {"from": "ICICIPRULI", "to": "HDFCLIFE", "width": 0.6484109865758388}, {"from": "ICICIPRULI", "to": "ICICIBANK", "width": 0.4677713629630627}, {"from": "ICICIPRULI", "to": "SBILIFE", "width": 0.6152867047796343}, {"from": "ICICIPRULI", "to": "TATACONSUM", "width": 0.4743805403495378}, {"from": "CHOLAFIN", "to": "ASHOKLEY", "width": 0.4900488400635038}, {"from": "CHOLAFIN", "to": "AXISBANK", "width": 0.5826347407842188}, {"from": "CHOLAFIN", "to": "BANDHANBNK", "width": 0.4975488695371898}, {"from": "CHOLAFIN", "to": "BHARATFORG", "width": 0.4576974633944886}, {"from": "CHOLAFIN", "to": "BOSCHLTD", "width": 0.4760779392746555}, {"from": "CHOLAFIN", "to": "DLF", "width": 0.4911335344961181}, {"from": "CHOLAFIN", "to": "FEDERALBNK", "width": 0.5429326501280368}, {"from": "CHOLAFIN", "to": "ICICIBANK", "width": 0.572044401024194}, {"from": "CHOLAFIN", "to": "IDFCFIRSTB", "width": 0.5165595650806478}, {"from": "CHOLAFIN", "to": "INDUSINDBK", "width": 0.4919396103136664}, {"from": "CHOLAFIN", "to": "KOTAKBANK", "width": 0.4697083729617763}, {"from": "CHOLAFIN", "to": "L\u0026TFH", "width": 0.5976560698249649}, {"from": "CHOLAFIN", "to": "LT", "width": 0.4586642772256309}, {"from": "CHOLAFIN", "to": "M\u0026MFIN", "width": 0.6049771821073147}, {"from": "CHOLAFIN", "to": "MARUTI", "width": 0.490193235486812}, {"from": "CHOLAFIN", "to": "MUTHOOTFIN", "width": 0.4629952919761455}, {"from": "CHOLAFIN", "to": "SBIN", "width": 0.4867285398921806}, {"from": "CHOLAFIN", "to": "SHRIRAMFIN", "width": 0.5730150429328247}, {"from": "CHOLAFIN", "to": "TATACONSUM", "width": 0.4511067061875964}, {"from": "CHOLAFIN", "to": "TVSMOTOR", "width": 0.4531746414959034}, {"from": "BOSCHLTD", "to": "ASHOKLEY", "width": 0.4756610050650647}, {"from": "BOSCHLTD", "to": "AXISBANK", "width": 0.4650201287551902}, {"from": "BOSCHLTD", "to": "BHARATFORG", "width": 0.4721828380055884}, {"from": "BOSCHLTD", "to": "DLF", "width": 0.4877969372626941}, {"from": "BOSCHLTD", "to": "FEDERALBNK", "width": 0.4984072997448383}, {"from": "BOSCHLTD", "to": "HEROMOTOCO", "width": 0.4562481790872081}, {"from": "BOSCHLTD", "to": "ICICIBANK", "width": 0.4779214732503983}, {"from": "BOSCHLTD", "to": "IDFCFIRSTB", "width": 0.5077452516853147}, {"from": "BOSCHLTD", "to": "L\u0026TFH", "width": 0.5133477562539294}, {"from": "BOSCHLTD", "to": "LT", "width": 0.466489513001473}, {"from": "BOSCHLTD", "to": "MARUTI", "width": 0.5252922789567309}, {"from": "BOSCHLTD", "to": "SBIN", "width": 0.4637129566317343}, {"from": "BOSCHLTD", "to": "SHRIRAMFIN", "width": 0.4545917993289386}, {"from": "SJVN", "to": "NHPC", "width": 0.6061388297507839}, {"from": "LTIM", "to": "COFORGE", "width": 0.5680698034559745}, {"from": "LTIM", "to": "HCLTECH", "width": 0.584791680024182}, {"from": "LTIM", "to": "INFY", "width": 0.5945197546609846}, {"from": "LTIM", "to": "PERSISTENT", "width": 0.5111690043065072}, {"from": "LTIM", "to": "TCS", "width": 0.5141758523155676}, {"from": "LTIM", "to": "TECHM", "width": 0.5746429984027341}, {"from": "LTIM", "to": "WIPRO", "width": 0.5062382744467088}, {"from": "SBICARD", "to": "L\u0026TFH", "width": 0.452964011282239}, {"from": "OIL", "to": "ONGC", "width": 0.6100517295752277}, {"from": "TVSMOTOR", "to": "HEROMOTOCO", "width": 0.509015029583446}, {"from": "TVSMOTOR", "to": "MARUTI", "width": 0.5026063479990822}, {"from": "ASHOKLEY", "to": "AXISBANK", "width": 0.464903524705666}, {"from": "ASHOKLEY", "to": "BANDHANBNK", "width": 0.4785612633159051}, {"from": "ASHOKLEY", "to": "BHARATFORG", "width": 0.597064287502088}, {"from": "ASHOKLEY", "to": "DLF", "width": 0.5082281131365651}, {"from": "ASHOKLEY", "to": "FEDERALBNK", "width": 0.5233652783309396}, {"from": "ASHOKLEY", "to": "IDFCFIRSTB", "width": 0.5274033015784096}, {"from": "ASHOKLEY", "to": "INDHOTEL", "width": 0.4557088955972839}, {"from": "ASHOKLEY", "to": "INDUSINDBK", "width": 0.4823764470606452}, {"from": "ASHOKLEY", "to": "L\u0026TFH", "width": 0.4752049389390726}, {"from": "ASHOKLEY", "to": "LT", "width": 0.5051989056462423}, {"from": "ASHOKLEY", "to": "MARUTI", "width": 0.4626540371530107}, {"from": "ASHOKLEY", "to": "SBIN", "width": 0.4656375018320112}, {"from": "ASHOKLEY", "to": "SHRIRAMFIN", "width": 0.4797279488028823}, {"from": "INDHOTEL", "to": "DLF", "width": 0.4769200739835405}, {"from": "INDHOTEL", "to": "FEDERALBNK", "width": 0.4684178293730516}, {"from": "CIPLA", "to": "AUROPHARMA", "width": 0.4566487460184037}, {"from": "CIPLA", "to": "DRREDDY", "width": 0.4884754426834834}, {"from": "CIPLA", "to": "LUPIN", "width": 0.5298413260174688}, {"from": "CIPLA", "to": "SUNPHARMA", "width": 0.517204223535004}, {"from": "CIPLA", "to": "ZYDUSLIFE", "width": 0.4959161701849544}, {"from": "MARICO", "to": "DABUR", "width": 0.5559623666882739}, {"from": "MARICO", "to": "HINDUNILVR", "width": 0.4525664201637312}, {"from": "JINDALSTEL", "to": "AXISBANK", "width": 0.4525652641867937}, {"from": "JINDALSTEL", "to": "DLF", "width": 0.4981527385954599}, {"from": "JINDALSTEL", "to": "FEDERALBNK", "width": 0.454031415077847}, {"from": "JINDALSTEL", "to": "HINDALCO", "width": 0.7052134293469451}, {"from": "JINDALSTEL", "to": "ICICIBANK", "width": 0.4739636435552581}, {"from": "JINDALSTEL", "to": "IDFCFIRSTB", "width": 0.4577371345094688}, {"from": "JINDALSTEL", "to": "JSL", "width": 0.4892779030628941}, {"from": "JINDALSTEL", "to": "JSWSTEEL", "width": 0.7623295353002468}, {"from": "JINDALSTEL", "to": "L\u0026TFH", "width": 0.4886772470114811}, {"from": "JINDALSTEL", "to": "NMDC", "width": 0.5439319189714793}, {"from": "JINDALSTEL", "to": "SAIL", "width": 0.7198893330185593}, {"from": "JINDALSTEL", "to": "SBIN", "width": 0.4901916888928098}, {"from": "JINDALSTEL", "to": "TATAPOWER", "width": 0.4958826397546162}, {"from": "JINDALSTEL", "to": "ULTRACEMCO", "width": 0.4681689452205915}, {"from": "JINDALSTEL", "to": "VEDL", "width": 0.5345739889448099}, {"from": "HEROMOTOCO", "to": "MARUTI", "width": 0.5351224066179793}, {"from": "MUTHOOTFIN", "to": "AXISBANK", "width": 0.4642075330346543}, {"from": "MUTHOOTFIN", "to": "FEDERALBNK", "width": 0.4711500656226062}, {"from": "MUTHOOTFIN", "to": "L\u0026TFH", "width": 0.4955759472953107}, {"from": "IOC", "to": "BPCL", "width": 0.6111457610148828}, {"from": "IOC", "to": "HINDPETRO", "width": 0.616332014686788}, {"from": "MOTHERSON", "to": "BHARATFORG", "width": 0.4645354966517077}, {"from": "MOTHERSON", "to": "ICICIBANK", "width": 0.4544967395511598}, {"from": "MOTHERSON", "to": "L\u0026TFH", "width": 0.4899510858716063}, {"from": "BPCL", "to": "HINDPETRO", "width": 0.7419025945491055}, {"from": "BPCL", "to": "SAIL", "width": 0.4853616277337629}, {"from": "BPCL", "to": "SBIN", "width": 0.4827431853753895}, {"from": "VEDL", "to": "HINDALCO", "width": 0.6025555119953492}, {"from": "VEDL", "to": "JSWSTEEL", "width": 0.5575872564622628}, {"from": "VEDL", "to": "NMDC", "width": 0.4926516022653426}, {"from": "VEDL", "to": "ONGC", "width": 0.4740846070584814}, {"from": "VEDL", "to": "SAIL", "width": 0.5696124685348573}, {"from": "DALBHARAT", "to": "DLF", "width": 0.4768948417218778}, {"from": "DALBHARAT", "to": "IDFCFIRSTB", "width": 0.4523335400677809}, {"from": "DALBHARAT", "to": "L\u0026TFH", "width": 0.4604360986055064}, {"from": "DALBHARAT", "to": "SHREECEM", "width": 0.471385203789677}, {"from": "DALBHARAT", "to": "ULTRACEMCO", "width": 0.5308124809911123}, {"from": "RECLTD", "to": "BHEL", "width": 0.4847059165634189}, {"from": "RECLTD", "to": "DLF", "width": 0.4570611273234867}, {"from": "RECLTD", "to": "FEDERALBNK", "width": 0.4783802546632272}, {"from": "RECLTD", "to": "IDFCFIRSTB", "width": 0.4797739378597409}, {"from": "RECLTD", "to": "L\u0026TFH", "width": 0.5361812565135293}, {"from": "RECLTD", "to": "PFC", "width": 0.7527043957719457}, {"from": "RECLTD", "to": "SBIN", "width": 0.5082375677184734}, {"from": "PFC", "to": "ABCAPITAL", "width": 0.4617486836822405}, {"from": "PFC", "to": "AXISBANK", "width": 0.4533074347459835}, {"from": "PFC", "to": "BHEL", "width": 0.4813927958463156}, {"from": "PFC", "to": "DLF", "width": 0.4889632134513557}, {"from": "PFC", "to": "FEDERALBNK", "width": 0.4839438125217372}, {"from": "PFC", "to": "IDFCFIRSTB", "width": 0.4738181499070463}, {"from": "PFC", "to": "L\u0026TFH", "width": 0.5627644228661418}, {"from": "PFC", "to": "LT", "width": 0.4638417942772131}, {"from": "PFC", "to": "SAIL", "width": 0.4747967549833655}, {"from": "PFC", "to": "SBIN", "width": 0.5377877142246847}, {"from": "HINDALCO", "to": "AXISBANK", "width": 0.4631848334632181}, {"from": "HINDALCO", "to": "COALINDIA", "width": 0.4565197502031554}, {"from": "HINDALCO", "to": "DLF", "width": 0.5179135415859435}, {"from": "HINDALCO", "to": "FEDERALBNK", "width": 0.4592811392624136}, {"from": "HINDALCO", "to": "ICICIBANK", "width": 0.4846523048541065}, {"from": "HINDALCO", "to": "JSWSTEEL", "width": 0.7070173103326537}, {"from": "HINDALCO", "to": "L\u0026TFH", "width": 0.4890130446554437}, {"from": "HINDALCO", "to": "LT", "width": 0.490583639876001}, {"from": "HINDALCO", "to": "NMDC", "width": 0.5545979354826204}, {"from": "HINDALCO", "to": "ONGC", "width": 0.4620506626456913}, {"from": "HINDALCO", "to": "SAIL", "width": 0.6711279376450887}, {"from": "HINDALCO", "to": "SBIN", "width": 0.5056193394455103}, {"from": "HINDALCO", "to": "ULTRACEMCO", "width": 0.4741318233980198}, {"from": "HINDALCO", "to": "UPL", "width": 0.4524405844839216}, {"from": "SBILIFE", "to": "HDFCLIFE", "width": 0.651794224374167}, {"from": "SBILIFE", "to": "ULTRACEMCO", "width": 0.4626692244045338}, {"from": "IDBI", "to": "BANKINDIA", "width": 0.4669997251345983}, {"from": "IDBI", "to": "INDIANB", "width": 0.4588654656503974}, {"from": "IDBI", "to": "UNIONBANK", "width": 0.5051721031430872}, {"from": "PRESTIGE", "to": "DLF", "width": 0.4871869817338281}, {"from": "CONCOR", "to": "DLF", "width": 0.4627224637635268}, {"from": "CONCOR", "to": "FEDERALBNK", "width": 0.4632210498828376}, {"from": "ADANIENT", "to": "ADANIPORTS", "width": 0.6863560474288514}, {"from": "ADANIENT", "to": "ATGL", "width": 0.4799586550463182}, {"from": "ADANIENT", "to": "AWL", "width": 0.4875676645057689}, {"from": "NTPC", "to": "COALINDIA", "width": 0.5171631161141588}, {"from": "NTPC", "to": "ONGC", "width": 0.457370683730909}, {"from": "NTPC", "to": "POWERGRID", "width": 0.4804665947203691}, {"from": "NTPC", "to": "TATAPOWER", "width": 0.4781048838416015}, {"from": "BRITANNIA", "to": "COLPAL", "width": 0.4739037191031082}, {"from": "BRITANNIA", "to": "DABUR", "width": 0.5267457128116305}, {"from": "BRITANNIA", "to": "HINDUNILVR", "width": 0.5781552455967897}, {"from": "BRITANNIA", "to": "TATACONSUM", "width": 0.5037213223804595}, {"from": "INFY", "to": "COFORGE", "width": 0.5859931626110668}, {"from": "INFY", "to": "HCLTECH", "width": 0.6923975246712109}, {"from": "INFY", "to": "PERSISTENT", "width": 0.4923441503846852}, {"from": "INFY", "to": "TCS", "width": 0.7234451006181745}, {"from": "INFY", "to": "TECHM", "width": 0.644136661157505}, {"from": "INFY", "to": "WIPRO", "width": 0.6446757292241362}, {"from": "SHREECEM", "to": "DLF", "width": 0.4572102529440309}, {"from": "SHREECEM", "to": "LT", "width": 0.4828678004845051}, {"from": "SHREECEM", "to": "ULTRACEMCO", "width": 0.6897676676340714}, {"from": "SIEMENS", "to": "L\u0026TFH", "width": 0.452780228605554}, {"from": "SIEMENS", "to": "LT", "width": 0.4953466327391708}, {"from": "SIEMENS", "to": "SBIN", "width": 0.4556181110476162}, {"from": "SIEMENS", "to": "ULTRACEMCO", "width": 0.4666321357656754}, {"from": "BERGEPAINT", "to": "ULTRACEMCO", "width": 0.4643376426354569}, {"from": "TATACONSUM", "to": "DABUR", "width": 0.4637897898985372}, {"from": "TATACONSUM", "to": "HDFCLIFE", "width": 0.4889210598111937}, {"from": "TATACONSUM", "to": "L\u0026TFH", "width": 0.4723388808176467}, {"from": "TATACONSUM", "to": "MARUTI", "width": 0.4767499317046847}, {"from": "TATACONSUM", "to": "ULTRACEMCO", "width": 0.4745292927041857}, {"from": "SUNPHARMA", "to": "AUROPHARMA", "width": 0.4866534324052303}, {"from": "SUNPHARMA", "to": "LUPIN", "width": 0.5210756836054994}, {"from": "SUNPHARMA", "to": "ZYDUSLIFE", "width": 0.4995136310794376}, {"from": "MCDOWELL-N", "to": "DLF", "width": 0.4819787429603391}, {"from": "ADANIPOWER", "to": "AWL", "width": 0.6206995364879194}, {"from": "ADANIPOWER", "to": "JIOFIN", "width": 0.4605031810229689}, {"from": "JSWSTEEL", "to": "AXISBANK", "width": 0.499795018858323}, {"from": "JSWSTEEL", "to": "DLF", "width": 0.5121645327348944}, {"from": "JSWSTEEL", "to": "FEDERALBNK", "width": 0.4836319951826947}, {"from": "JSWSTEEL", "to": "ICICIBANK", "width": 0.5328684255992204}, {"from": "JSWSTEEL", "to": "IDFCFIRSTB", "width": 0.4626884942933881}, {"from": "JSWSTEEL", "to": "JSL", "width": 0.4915660524232337}, {"from": "JSWSTEEL", "to": "L\u0026TFH", "width": 0.5014377140789877}, {"from": "JSWSTEEL", "to": "LT", "width": 0.4603786725422395}, {"from": "JSWSTEEL", "to": "NMDC", "width": 0.5190744136711584}, {"from": "JSWSTEEL", "to": "SAIL", "width": 0.6918856771069503}, {"from": "JSWSTEEL", "to": "SBIN", "width": 0.5151068849229316}, {"from": "JSWSTEEL", "to": "ULTRACEMCO", "width": 0.5003776452535357}, {"from": "HCLTECH", "to": "COFORGE", "width": 0.5736696374451191}, {"from": "HCLTECH", "to": "PERSISTENT", "width": 0.4821405186665273}, {"from": "HCLTECH", "to": "TCS", "width": 0.6538284361491583}, {"from": "HCLTECH", "to": "TECHM", "width": 0.6535586044541432}, {"from": "HCLTECH", "to": "WIPRO", "width": 0.6251128172932022}, {"from": "M\u0026MFIN", "to": "ABCAPITAL", "width": 0.4909309656732767}, {"from": "M\u0026MFIN", "to": "AXISBANK", "width": 0.4801851064129537}, {"from": "M\u0026MFIN", "to": "BANDHANBNK", "width": 0.4923772037145556}, {"from": "M\u0026MFIN", "to": "FEDERALBNK", "width": 0.5166734181261922}, {"from": "M\u0026MFIN", "to": "ICICIBANK", "width": 0.5066292435998774}, {"from": "M\u0026MFIN", "to": "IDFCFIRSTB", "width": 0.5287453568414424}, {"from": "M\u0026MFIN", "to": "INDUSINDBK", "width": 0.4598210061048429}, {"from": "M\u0026MFIN", "to": "L\u0026TFH", "width": 0.6144499670038579}, {"from": "M\u0026MFIN", "to": "SBIN", "width": 0.5006413917491682}, {"from": "M\u0026MFIN", "to": "SHRIRAMFIN", "width": 0.5340188952494118}, {"from": "L\u0026TFH", "to": "ABCAPITAL", "width": 0.6056925905042329}, {"from": "L\u0026TFH", "to": "ADANIPORTS", "width": 0.4834014341434485}, {"from": "L\u0026TFH", "to": "AXISBANK", "width": 0.5856694164881187}, {"from": "L\u0026TFH", "to": "BANDHANBNK", "width": 0.5094036221951279}, {"from": "L\u0026TFH", "to": "BHEL", "width": 0.5184342965012493}, {"from": "L\u0026TFH", "to": "DEEPAKNTR", "width": 0.4750650310876166}, {"from": "L\u0026TFH", "to": "DLF", "width": 0.590116247927923}, {"from": "L\u0026TFH", "to": "FEDERALBNK", "width": 0.6240972448719773}, {"from": "L\u0026TFH", "to": "GODREJPROP", "width": 0.5474638842166281}, {"from": "L\u0026TFH", "to": "HDFCAMC", "width": 0.4804246691064615}, {"from": "L\u0026TFH", "to": "ICICIBANK", "width": 0.5778137686533942}, {"from": "L\u0026TFH", "to": "IDFCFIRSTB", "width": 0.6544438066239558}, {"from": "L\u0026TFH", "to": "INDIANB", "width": 0.4579238502311585}, {"from": "L\u0026TFH", "to": "INDUSINDBK", "width": 0.5196160243334635}, {"from": "L\u0026TFH", "to": "KOTAKBANK", "width": 0.4766447377050447}, {"from": "L\u0026TFH", "to": "LT", "width": 0.5169783803282618}, {"from": "L\u0026TFH", "to": "MARUTI", "width": 0.4863282117567004}, {"from": "L\u0026TFH", "to": "MRF", "width": 0.4589155382464027}, {"from": "L\u0026TFH", "to": "RELIANCE", "width": 0.4705116757947496}, {"from": "L\u0026TFH", "to": "SAIL", "width": 0.5011482464875404}, {"from": "L\u0026TFH", "to": "SBIN", "width": 0.6099218140454468}, {"from": "L\u0026TFH", "to": "SHRIRAMFIN", "width": 0.5434547473286969}, {"from": "L\u0026TFH", "to": "TATAPOWER", "width": 0.4829445020011781}, {"from": "L\u0026TFH", "to": "ULTRACEMCO", "width": 0.4617141081842721}, {"from": "L\u0026TFH", "to": "UNIONBANK", "width": 0.4617223948727678}, {"from": "L\u0026TFH", "to": "UPL", "width": 0.4728699753422935}, {"from": "PERSISTENT", "to": "COFORGE", "width": 0.5258024062569187}, {"from": "PERSISTENT", "to": "TECHM", "width": 0.4764109230621804}, {"from": "PERSISTENT", "to": "WIPRO", "width": 0.46457612284577}, {"from": "SBIN", "to": "ABCAPITAL", "width": 0.4865004085368155}, {"from": "SBIN", "to": "ADANIPORTS", "width": 0.472306036028428}, {"from": "SBIN", "to": "AXISBANK", "width": 0.6569727188044309}, {"from": "SBIN", "to": "BANDHANBNK", "width": 0.4800598695998603}, {"from": "SBIN", "to": "BANKINDIA", "width": 0.5241211390433268}, {"from": "SBIN", "to": "BHEL", "width": 0.4826777736485158}, {"from": "SBIN", "to": "DLF", "width": 0.6107840147645214}, {"from": "SBIN", "to": "FEDERALBNK", "width": 0.6763653028823595}, {"from": "SBIN", "to": "GODREJPROP", "width": 0.4627126679617444}, {"from": "SBIN", "to": "ICICIBANK", "width": 0.698388457924279}, {"from": "SBIN", "to": "IDFCFIRSTB", "width": 0.5959609296789763}, {"from": "SBIN", "to": "INDIANB", "width": 0.5516530521123096}, {"from": "SBIN", "to": "INDUSINDBK", "width": 0.5216415992258463}, {"from": "SBIN", "to": "KOTAKBANK", "width": 0.4988322707869735}, {"from": "SBIN", "to": "LT", "width": 0.5304399502817329}, {"from": "SBIN", "to": "MARUTI", "width": 0.4699506812895363}, {"from": "SBIN", "to": "SAIL", "width": 0.5221977564965672}, {"from": "SBIN", "to": "SHRIRAMFIN", "width": 0.4762075400835497}, {"from": "SBIN", "to": "TATAPOWER", "width": 0.4655245103354687}, {"from": "SBIN", "to": "ULTRACEMCO", "width": 0.487383102840546}, {"from": "SBIN", "to": "UNIONBANK", "width": 0.5673844395210825}, {"from": "TCS", "to": "COFORGE", "width": 0.5281644698588488}, {"from": "TCS", "to": "TECHM", "width": 0.5977878260803405}, {"from": "TCS", "to": "WIPRO", "width": 0.6158738127958826}, {"from": "CENTRALBK", "to": "BANKINDIA", "width": 0.6126206892570949}, {"from": "CENTRALBK", "to": "INDIANB", "width": 0.4875773262127904}, {"from": "CENTRALBK", "to": "IOB", "width": 0.7956207161418846}, {"from": "CENTRALBK", "to": "UNIONBANK", "width": 0.5513976206821161}, {"from": "DABUR", "to": "COLPAL", "width": 0.4935526916258779}, {"from": "DABUR", "to": "GODREJCP", "width": 0.5359151417213149}, {"from": "DABUR", "to": "HINDUNILVR", "width": 0.5605638418923149}, {"from": "AUROPHARMA", "to": "DRREDDY", "width": 0.4756256573305774}, {"from": "AUROPHARMA", "to": "ZYDUSLIFE", "width": 0.4835351838364472}, {"from": "DRREDDY", "to": "ZYDUSLIFE", "width": 0.5111461725650468}, {"from": "AWL", "to": "ADANIGREEN", "width": 0.4538811616324518}, {"from": "AWL", "to": "ATGL", "width": 0.4991999634670224}, {"from": "GAIL", "to": "ONGC", "width": 0.5096569194590771}, {"from": "NLCINDIA", "to": "COALINDIA", "width": 0.4714463215505687}, {"from": "NLCINDIA", "to": "NHPC", "width": 0.4518677088249468}, {"from": "FEDERALBNK", "to": "ABCAPITAL", "width": 0.5414844511298481}, {"from": "FEDERALBNK", "to": "AXISBANK", "width": 0.6680389031088034}, {"from": "FEDERALBNK", "to": "BANDHANBNK", "width": 0.6088930719672578}, {"from": "FEDERALBNK", "to": "BHARATFORG", "width": 0.497976450113192}, {"from": "FEDERALBNK", "to": "BHEL", "width": 0.5096910916207412}, {"from": "FEDERALBNK", "to": "DLF", "width": 0.5833458308824507}, {"from": "FEDERALBNK", "to": "GODREJPROP", "width": 0.486325911801962}, {"from": "FEDERALBNK", "to": "HDFCAMC", "width": 0.4543837182541562}, {"from": "FEDERALBNK", "to": "ICICIBANK", "width": 0.656815606505581}, {"from": "FEDERALBNK", "to": "IDFCFIRSTB", "width": 0.6460173577596505}, {"from": "FEDERALBNK", "to": "INDIANB", "width": 0.5394347983708186}, {"from": "FEDERALBNK", "to": "INDUSINDBK", "width": 0.6346781777276925}, {"from": "FEDERALBNK", "to": "KOTAKBANK", "width": 0.5060317668558413}, {"from": "FEDERALBNK", "to": "LT", "width": 0.5496588704957284}, {"from": "FEDERALBNK", "to": "MARUTI", "width": 0.4586142567654516}, {"from": "FEDERALBNK", "to": "NMDC", "width": 0.4699789517278308}, {"from": "FEDERALBNK", "to": "SAIL", "width": 0.4837393386982521}, {"from": "FEDERALBNK", "to": "SHRIRAMFIN", "width": 0.5331200963716795}, {"from": "FEDERALBNK", "to": "TATAPOWER", "width": 0.4815149862366203}, {"from": "FEDERALBNK", "to": "ULTRACEMCO", "width": 0.4711652502666468}, {"from": "FEDERALBNK", "to": "UNIONBANK", "width": 0.5205401425637698}, {"from": "FEDERALBNK", "to": "UPL", "width": 0.4537334228062855}, {"from": "KOTAKBANK", "to": "AXISBANK", "width": 0.5385714289791802}, {"from": "KOTAKBANK", "to": "ICICIBANK", "width": 0.6226088288787546}, {"from": "KOTAKBANK", "to": "INDUSINDBK", "width": 0.4590927607613366}, {"from": "KOTAKBANK", "to": "LT", "width": 0.4732250385170309}, {"from": "KOTAKBANK", "to": "SHRIRAMFIN", "width": 0.4965698227476381}, {"from": "BHEL", "to": "ABCAPITAL", "width": 0.4570456559533078}, {"from": "BHEL", "to": "COALINDIA", "width": 0.4714018266761862}, {"from": "BHEL", "to": "DLF", "width": 0.4844086802612061}, {"from": "BHEL", "to": "IDFCFIRSTB", "width": 0.4864074079124165}, {"from": "BHEL", "to": "NMDC", "width": 0.477766878559715}, {"from": "BHEL", "to": "SAIL", "width": 0.512693977625336}, {"from": "BHEL", "to": "TATAPOWER", "width": 0.5021434570875697}, {"from": "MRF", "to": "IDFCFIRSTB", "width": 0.4514992139545435}, {"from": "BHARATFORG", "to": "DLF", "width": 0.484047814979041}, {"from": "BHARATFORG", "to": "IDFCFIRSTB", "width": 0.4655668742394344}, {"from": "BHARATFORG", "to": "LT", "width": 0.4939115957623156}, {"from": "BHARATFORG", "to": "MARUTI", "width": 0.4920985109027611}, {"from": "LICI", "to": "GICRE", "width": 0.4782007842729578}, {"from": "SAIL", "to": "COALINDIA", "width": 0.477221974426232}, {"from": "SAIL", "to": "DLF", "width": 0.4938069677297357}, {"from": "SAIL", "to": "IDFCFIRSTB", "width": 0.4866165654372391}, {"from": "SAIL", "to": "JSL", "width": 0.4988422362574103}, {"from": "SAIL", "to": "NMDC", "width": 0.6034705536088686}, {"from": "SAIL", "to": "TATAPOWER", "width": 0.5049417213018896}, {"from": "IOB", "to": "BANKINDIA", "width": 0.6059731315408713}, {"from": "IOB", "to": "INDIANB", "width": 0.4707430922030752}, {"from": "IOB", "to": "UNIONBANK", "width": 0.5645343199432437}, {"from": "MARUTI", "to": "AXISBANK", "width": 0.5106413266822892}, {"from": "MARUTI", "to": "DLF", "width": 0.4568377974717203}, {"from": "MARUTI", "to": "ICICIBANK", "width": 0.508460690162863}, {"from": "MARUTI", "to": "LT", "width": 0.4680756409814819}, {"from": "MARUTI", "to": "ULTRACEMCO", "width": 0.4944160430878036}, {"from": "COALINDIA", "to": "IDFCFIRSTB", "width": 0.4533686523039834}, {"from": "COALINDIA", "to": "NMDC", "width": 0.5419386129362785}, {"from": "COALINDIA", "to": "ONGC", "width": 0.5342449095284711}, {"from": "ULTRACEMCO", "to": "AXISBANK", "width": 0.4667643576631575}, {"from": "ULTRACEMCO", "to": "DLF", "width": 0.5228864590333869}, {"from": "ULTRACEMCO", "to": "ICICIBANK", "width": 0.5006035474421454}, {"from": "ULTRACEMCO", "to": "LT", "width": 0.5198499740962174}, {"from": "LUPIN", "to": "ZYDUSLIFE", "width": 0.5270441866384449}, {"from": "ICICIBANK", "to": "AXISBANK", "width": 0.7657450062421486}, {"from": "ICICIBANK", "to": "BANDHANBNK", "width": 0.5070825447180459}, {"from": "ICICIBANK", "to": "DLF", "width": 0.5289465265914935}, {"from": "ICICIBANK", "to": "GODREJPROP", "width": 0.4553477059250685}, {"from": "ICICIBANK", "to": "IDFCFIRSTB", "width": 0.5321623147011015}, {"from": "ICICIBANK", "to": "INDUSINDBK", "width": 0.5748584645084777}, {"from": "ICICIBANK", "to": "LT", "width": 0.5558379547700336}, {"from": "ICICIBANK", "to": "SHRIRAMFIN", "width": 0.551434512316475}, {"from": "ONGC", "to": "NMDC", "width": 0.4539643526557768}, {"from": "DLF", "to": "ABCAPITAL", "width": 0.5220619197941989}, {"from": "DLF", "to": "AXISBANK", "width": 0.4959846244443235}, {"from": "DLF", "to": "BANDHANBNK", "width": 0.4854202192614089}, {"from": "DLF", "to": "GODREJPROP", "width": 0.6370341691875129}, {"from": "DLF", "to": "HAVELLS", "width": 0.4575230598519012}, {"from": "DLF", "to": "HDFCAMC", "width": 0.4671665681996726}, {"from": "DLF", "to": "IDFCFIRSTB", "width": 0.5245417233220776}, {"from": "DLF", "to": "INDUSINDBK", "width": 0.4722589113924877}, {"from": "DLF", "to": "LT", "width": 0.5376520001959011}, {"from": "DLF", "to": "OBEROIRLTY", "width": 0.54518729956567}, {"from": "DLF", "to": "TATAPOWER", "width": 0.5088788135475698}, {"from": "UNIONBANK", "to": "BANKINDIA", "width": 0.6856677785931425}, {"from": "UNIONBANK", "to": "IDFCFIRSTB", "width": 0.5067739273222974}, {"from": "UNIONBANK", "to": "INDIANB", "width": 0.6464697470078281}, {"from": "SHRIRAMFIN", "to": "AXISBANK", "width": 0.5303738281742826}, {"from": "SHRIRAMFIN", "to": "BANDHANBNK", "width": 0.5021113265216621}, {"from": "SHRIRAMFIN", "to": "IDFCFIRSTB", "width": 0.5183423155072147}, {"from": "SHRIRAMFIN", "to": "INDUSINDBK", "width": 0.4888436914603212}, {"from": "SHRIRAMFIN", "to": "LT", "width": 0.4814031563023999}, {"from": "INDUSTOWER", "to": "IDEA", "width": 0.5105197143628967}, {"from": "ADANIGREEN", "to": "ATGL", "width": 0.5205889864059501}, {"from": "TECHM", "to": "COFORGE", "width": 0.5686593053228023}, {"from": "TECHM", "to": "WIPRO", "width": 0.6068151898961277}, {"from": "INDUSINDBK", "to": "ABCAPITAL", "width": 0.4579072690123043}, {"from": "INDUSINDBK", "to": "AXISBANK", "width": 0.6039833238573242}, {"from": "INDUSINDBK", "to": "BANDHANBNK", "width": 0.5989663505466453}, {"from": "INDUSINDBK", "to": "IDFCFIRSTB", "width": 0.5198102331711749}, {"from": "INDUSINDBK", "to": "LT", "width": 0.4945459796221352}, {"from": "IDFCFIRSTB", "to": "ABCAPITAL", "width": 0.5712155135689715}, {"from": "IDFCFIRSTB", "to": "AXISBANK", "width": 0.5591449405751777}, {"from": "IDFCFIRSTB", "to": "BANDHANBNK", "width": 0.4964489734319616}, {"from": "IDFCFIRSTB", "to": "GODREJPROP", "width": 0.4565541079753441}, {"from": "IDFCFIRSTB", "to": "INDIANB", "width": 0.4797141708105953}, {"from": "IDFCFIRSTB", "to": "LT", "width": 0.4689963626892458}, {"from": "IDFCFIRSTB", "to": "NMDC", "width": 0.4762445484000767}, {"from": "IDFCFIRSTB", "to": "TATAPOWER", "width": 0.4734325613963669}, {"from": "IDFCFIRSTB", "to": "UPL", "width": 0.4538089376552277}, {"from": "BANKINDIA", "to": "ABCAPITAL", "width": 0.4690302823393675}, {"from": "BANKINDIA", "to": "INDIANB", "width": 0.6064305940728718}, {"from": "COLPAL", "to": "HINDUNILVR", "width": 0.4621227346052091}, {"from": "ABCAPITAL", "to": "BANDHANBNK", "width": 0.4640814655052641}, {"from": "ABCAPITAL", "to": "LT", "width": 0.459100261985207}, {"from": "HDFCLIFE", "to": "HDFCAMC", "width": 0.4612352703097342}, {"from": "TORNTPOWER", "to": "TATAPOWER", "width": 0.4680093284562626}, {"from": "OBEROIRLTY", "to": "GODREJPROP", "width": 0.4760432469950876}, {"from": "COFORGE", "to": "WIPRO", "width": 0.54308469114682}, {"from": "BANDHANBNK", "to": "AXISBANK", "width": 0.5208548539636341}, {"from": "BANDHANBNK", "to": "LT", "width": 0.4773673223313746}, {"from": "GODREJPROP", "to": "LT", "width": 0.4939546779659117}, {"from": "AXISBANK", "to": "LT", "width": 0.5401659485865086}, {"from": "UPL", "to": "LT", "width": 0.4734116322830131}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.01,
+            "damping": 0.4,
+            "gravitationalConstant": -50,
+            "springConstant": 0.08,
+            "springLength": 100
+        },
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
