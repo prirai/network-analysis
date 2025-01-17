@@ -1,3 +1,5 @@
+![](overview.png)
+
 ## Problem Statement
 
 Creation and analysis of a stock market network using the data from Indian Stock market.
@@ -6,6 +8,7 @@ The objective here is to study correlation between stocks traded at the National
 the basis of the market capitalization data published by NSE [1].
 
 The Equity (EQ) series has been chosen with the Normal segment (N) as the market type.
+
 [1]: [All Companies based on Market Capitalisation (December 31, 2023)](https://nsearchives.nseindia.com/web/sites/default/files/inline-files/MCAP31122023_0.xlsx)
 
 ## Data Collection
